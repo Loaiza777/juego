@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sopa de Letras: Git & Frontend Development</title>
+    <meta name="description" content="Juego interactivo de Sopa de Letras sobre Git, GitHub, JavaScript y Frameworks Frontend.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="bg-grid"></div>
+
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="main-header">
+            <div class="brand">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="18" r="3"></circle>
+                        <circle cx="6" cy="6" r="3"></circle>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <path d="M18 15V9a3 3 0 0 0-3-3H9"></path>
+                        <path d="M6 9v6"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Git & Frontend <span>WordSearch</span></h1>
+                    <p class="subtitle">Sopa de letras interactiva sobre desarrollo web</p>
+                </div>
+            </div>
+
+            <!-- Header Controls & Stats -->
+            <div class="header-stats">
+                <div class="stat-card">
+                    <span class="stat-label">Encontradas</span>
+                    <div class="stat-value"><span id="found-count">0</span><span class="total">/14</span></div>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">Tiempo</span>
+                    <div class="stat-value" id="timer-display">00:00</div>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">Puntaje</span>
+                    <div class="stat-value highlight" id="score-display">0</div>
+                </div>
+
+                <div class="header-actions">
+                    <button id="btn-restart" class="icon-btn tooltip" data-tooltip="Nuevo Tablero">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                    </button>
+                    <button id="btn-sound" class="icon-btn tooltip active" data-tooltip="Efectos de sonido">
+                        <svg class="sound-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                        <svg class="sound-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                    </button>
+                    <button id="btn-study-guide" class="btn-primary">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Guía de Repaso</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+
+        <!-- Target Words Bank Banner -->
+        <section class="target-words-section">
+            <div class="target-words-header">
+                <h3>📋 Palabras a Buscar (14):</h3>
+                <span class="hint-text">Encuentra las 14 palabras en la sopa de letras</span>
+            </div>
+            <div id="words-chip-list" class="words-chip-container">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- Main Game Layout -->
+        <main class="game-layout">
+            <!-- Left Panel: Grid & Active Word Selection -->
+            <section class="grid-section">
+                <div class="word-preview-bar">
+                    <span class="label">Selección actual:</span>
+                    <span id="current-selection" class="selection-text">Selecciona o desliza en el tablero...</span>
+                </div>
+
+                <div class="grid-wrapper">
+                    <div id="word-search-grid" class="grid-container"></div>
+                </div>
+
+                <div class="grid-footer-hints">
+                    <div class="hint-pill">💡 Selecciona las palabras arrastrando o haciendo clic en la 1ª y última letra.</div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Questions & Concept Details -->
+            <section class="questions-section">
+                <div class="section-title">
+                    <h2>Cuestionario y Conceptos <span>(14)</span></h2>
+                    <span class="subtitle-sm">Respuestas asociadas a cada palabra</span>
+                </div>
+
+                <div id="questions-list" class="questions-grid">
+                    <!-- Cards dynamically injected via JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Victory Modal -->
+    <div id="victory-modal" class="modal-overlay">
+        <canvas id="confetti-canvas"></canvas>
+        <div class="modal-content victory-card">
+            <div class="victory-header">
+                <div class="trophy-icon">🏆</div>
+                <h2>¡Felicitaciones!</h2>
+                <p>Has encontrado las 14 palabras de Git y Frontend.</p>
+            </div>
+
+            <div class="victory-stats">
+                <div class="v-stat">
+                    <span class="v-label">Tiempo Total</span>
+                    <span class="v-val" id="final-time">00:00</span>
+                </div>
+                <div class="v-stat">
+                    <span class="v-label">Puntaje Final</span>
+                    <span class="v-val gold" id="final-score">0</span>
+                </div>
+            </div>
+
+            <div class="victory-summary">
+                <h3>Conceptos Completados:</h3>
+                <ul class="badge-list">
+                    <li><span class="badge">Git & GitHub</span></li>
+                    <li><span class="badge">Commits & Branches</span></li>
+                    <li><span class="badge">JavaScript & Frontend</span></li>
+                    <li><span class="badge">React, Angular, Vue, Svelte</span></li>
+                    <li><span class="badge">GitHub Pages</span></li>
+                </ul>
+            </div>
+
+            <div class="modal-actions">
+                <button id="btn-play-again" class="btn-primary large">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                    <span>Jugar de Nuevo</span>
+                </button>
+                <button id="btn-view-answers" class="btn-secondary large">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                    <span>Ver Repaso Completo</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Study Guide / Answers Modal -->
+    <div id="study-modal" class="modal-overlay">
+        <div class="modal-content study-card">
+            <div class="study-header">
+                <div>
+                    <h2>📚 Guía de Repaso: Git & Frontend</h2>
+                    <p>Cuestionario resuelto completo de las 14 preguntas</p>
+                </div>
+                <button id="btn-close-study" class="close-btn">&times;</button>
+            </div>
+            <div id="study-body" class="study-body">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Word Detail & Concept Modal (Shows question, explanation and drawing when word is found) -->
+    <div id="word-detail-modal" class="modal-overlay">
+        <div class="modal-content word-detail-card">
+            <div class="word-detail-header">
+                <div class="word-found-badge">
+                    <span class="badge-icon">✨</span>
+                    <span class="found-text">¡Palabra Encontrada!</span>
+                    <span id="detail-word-title" class="word-title">GITHUB</span>
+                </div>
+                <button id="btn-close-word-detail" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="word-detail-body">
+                <!-- Dibujo / Ilustración del concepto -->
+                <div class="drawing-wrapper">
+                    <div class="drawing-header">🎨 Ilustración Explicativa</div>
+                    <div class="drawing-container" id="detail-drawing">
+                        <!-- SVG drawing injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Pregunta asociada -->
+                <div class="detail-section question-box">
+                    <div class="detail-label">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        <span>Pregunta que Responde</span>
+                    </div>
+                    <p id="detail-question-text" class="question-text"></p>
+                </div>
+
+                <!-- Explicación del concepto -->
+                <div class="detail-section explanation-box">
+                    <div class="detail-label">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>
+                        <span>Explicación Detallada</span>
+                    </div>
+                    <p id="detail-explanation-text" class="explanation-text"></p>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button id="btn-continue-game" class="btn-primary large">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <span>¡Continuar Jugando!</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
